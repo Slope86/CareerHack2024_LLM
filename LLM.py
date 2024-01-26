@@ -203,7 +203,7 @@ def classification_anomaly_openai(inputdata: str = None) -> list:
 
 def analyze_data(inputdata: str = None) -> str:
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {
                 "role": "system",
@@ -238,7 +238,7 @@ def analyze_data(inputdata: str = None) -> str:
 
 def sort_log(inputdata: str = None) -> str:
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {
                 "role": "system",
