@@ -19,30 +19,30 @@ def embedding_all_doc():
     # 在雲端時記得改 ../
     url_cpu = "CPU utilization.pdf"
     db_cpu = doc2vector(url_cpu)
-
+    time.sleep(10)
     url_Memory = "Memory utilization.pdf"
     db_Memory = doc2vector(url_Memory)
-
+    time.sleep(10)
     url_Cloud = "Cloud run restart.pdf"
     db_Cloud = doc2vector(url_Cloud)
-
+    time.sleep(10)
     url_Instance = "Instance count.pdf"
     db_Instance = doc2vector(url_Instance)
-
+    time.sleep(10)
     url = "http_1_3.pdf"
     db = doc2vector(url)
-
+    time.sleep(10)
     url2 = "http_4.pdf"
     db2 = doc2vector(url2)
-
+    time.sleep(10)
     url3 = "http_5.pdf"
     db3 = doc2vector(url3)
-
+    print("embedding finish")
     total_db = [db_cpu, db_Memory, db_Cloud, db_Instance, db, db, db, db2, db3]
     return total_db
 
 
-total_db = embedding_all_doc()
+#total_db = embedding_all_doc()
 
 
 def get_function_openai(inputdata: str = "Hello") -> list:
@@ -206,6 +206,38 @@ def analyze_data(inputdata: str = None) -> str:
 
     return completion.choices[0].message.content
 
+def sort_log(inputdata: str = None) -> str:
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": """
+                "Our system primarily records five types of anomalies:
+                CPU utilization >= 60% for 2 minutes
+                Memory utilization >= 60% for 2 minutes
+                Cloud run restart (startup_latency != 0)
+                Instance count >= 2
+                Response Failure (request count 4xx, 5xx)
+                You will receive logs from users in the following format (quantity may vary):
+                {'yyyy-mm-dd hh:mm:ss': 'anomaly description',
+                'yyyy-mm-dd hh:mm:ss': 'anomaly description'}
+
+                Here is an example:
+                {"2024-01-23 18:19:00": "instance count=2 (>= 2). other information: cpu:0.0% memory:37.63961792%     
+                instance_count:2.0 request_count:http code 200:1.0 http code 404:0.0 http code 500:0.0 request_latencies:0.0 ms",}
+                '"2024-01-24 08:13:00": "request fail. error code: 503. other information: cpu:0.9780119937% memory:1.48638916%     
+                instance_count:1.0 request_count:http code 200:0.0 http code 404:0.0 http code 503:1.0 request_latencies:0.0 ms",}
+                "2024-01-24 08:34:00": "cloud run restart at 106366.128 ms. other information: cpu:0.0% memory:2.39706421%          
+   	            instance_count:1.0 request_count:http code 200:1.0 http code 404:0.0 http code 500:0.0 request_latencies:0.0 ms",}
+
+                You must organize these logs and list them by category. Remember, you don't need to infer the system's status or conduct an in-depth analysis from these logs; just listing and organizing them is sufficient. Also, for these logs, you only need to describe the error types and dates without providing various metrics."
+             """,
+            },
+            {"role": "user", "content": inputdata},
+        ],
+    )
+    return completion.choices[0].message.content
 
 def gptqa(query: str = None) -> str:
     completion = client.chat.completions.create(

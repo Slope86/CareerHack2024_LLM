@@ -31,9 +31,15 @@ def classification_anomlay():
 def analyze_data():
     request_body: dict[str, str] = request.json
     inputdata = str(request_body["inputdata"])
-    describe = LLM.analyze_data(inputdata=inputdata)
+    describe = LLM.sort_log(inputdata=inputdata)
     return json.dumps(describe)
 
+@app.route("/api/sort_log", methods=["POST"])
+def sort_log():
+    request_body: dict[str, str] = request.json
+    inputdata = str(request_body["inputdata"])
+    describe = LLM.sort_log(inputdata=inputdata)
+    return json.dumps(describe)
 
 @app.route("/api/gptqa", methods=["POST"])
 def gptqa():
