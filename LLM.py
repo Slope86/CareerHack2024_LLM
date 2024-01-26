@@ -66,6 +66,7 @@ def get_function_openai(inputdata: str = "Hello") -> list:
                 3. CPU upscaling
                 4. Memory upscaling
                 5. Real-time data monitoring
+                6. send email
                 You will receive various inputs from users, and your task is to determine which category the task belongs to and output it in the format ['function code', 'arg 1', 'arg 2', 'arg 3']:
                 Here are some examples:
                 User input: 'How are you?'
@@ -110,6 +111,10 @@ def get_function_openai(inputdata: str = "Hello") -> list:
                 user_input: 'You can stop helping me manage the system now'
                 output: [5, stop, -1, -1]"
                 Note: since start manage system,arg1=stop,.Argument Description for instruction code 5: arg 1: action of manage  (arg1 must in set(start,stop) ),arg 2:not use always -1 ,arg 3 : not use always -1
+                Example 11:
+                user_input: Please send an email to notify the developers that the system has triggered a response error and ask the relevant personnel to address it.
+                output: [6, System anomaly: response error, please address urgently, -1, -1]
+                Note: Argument Description for instruction code 6: arg 1: email content, arg 2: not used, always -1, arg 3: not used, always -1
                 """,
             },
             {"role": "user", "content": inputdata},
@@ -274,15 +279,21 @@ def resovle(inputdata: str = None) -> str:
                 1.CPU upscale: Typically used when CPU usage is high or when you believe the system requires more CPU resources.
                 2.Increase memory: Usually employed when memory usage is high or when you think additional memory is needed.
                 3.Email system administrator: Generally used when other actions fail to resolve the problem or when you believe certain situations require notification.
+                4.nothing to do : system no error exist
                 Please follow this format for your response:
-                action: ... reason: ...
+                action: ...  content(only email system administrator needed): ... reason: ...
                 Remember, you can only execute one action at a time and your action will indeed be implemented, affecting the system. Please choose your actions carefully. Below are example outputs:
                 Example 1
-                action: CPU upscale. reason: Currently, the CPU usage is too high and there are no other anomalies, so an increase in CPU is necessary.
+                action: CPU upscale. 
+                reason: Currently, the CPU usage is too high and there are no other anomalies, so an increase in CPU is necessary.
                 Example 2
-                action: Increase memory. reason: Currently, there is insufficient memory and an expansion is needed.
+                action: Increase memory. 
+                reason: Currently, there is insufficient memory and an expansion is needed.
                 Example 3
-                action: Email system administrator. reason: There are multiple unknown connection errors occurring, requiring contact with relevant personnel for resolution.
+                action: Email system administrator. content:There are multiple unknown connection errors occurring, requiring contact with relevant personnel for resolution. error message:response fail 404
+                reason: Currently, the authorized actions are insufficient to resolve the issue. Therefore, it is necessary to send a letter requesting the relevant personnel to address it.
+                Example 4
+                action: nothing to do. content: system is safity
              """,
             },
             {"role": "user", "content": inputdata},
