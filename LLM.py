@@ -261,7 +261,7 @@ def sort_log(inputdata: str = None) -> str:
                 "2024-01-24 08:34:00": "cloud run restart at 106366.128 ms. other information: cpu:0.0% memory:2.39706421%          
    	            instance_count:1.0 request_count:http code 200:1.0 http code 404:0.0 http code 500:0.0 request_latencies:0.0 ms",}
 
-                You must organize these logs and list them by category. Remember, you don't need to infer the system's status or conduct an in-depth analysis from these logs; just listing and organizing them is sufficient. Also, for these logs, you only need to describe the error types and dates without providing various metrics."
+                You need to organize these logs, summarizing the times and types of anomalies briefly. Please limit the output to 100 words or less.
              """,
             },
             {"role": "user", "content": inputdata},

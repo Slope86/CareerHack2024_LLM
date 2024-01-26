@@ -31,7 +31,7 @@ def classification_anomlay():
 def analyze_data():
     request_body: dict[str, str] = request.json
     inputdata = str(request_body["inputdata"])
-    describe = LLM.sort_log(inputdata=inputdata)
+    describe = LLM.analyze_data(inputdata=inputdata)
     return json.dumps(describe)
 
 @app.route("/api/sort_log", methods=["POST"])
