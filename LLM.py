@@ -1,4 +1,5 @@
 import os
+import pickle
 import re
 import time
 
@@ -15,7 +16,36 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
+def save_embeddings(embeddings, filename):
+    with open(filename, "wb") as file:
+        pickle.dump(embeddings, file)
+
+
+def load_embeddings(filename):
+    with open(filename, "rb") as file:
+        return pickle.load(file)
+
+
 def embedding_all_doc():
+    filename = "embeddings.pkl"
+
+    # 檢查pickle檔案是否存在
+    if os.path.exists(filename):
+        # 從pickle檔案加載數據
+        total_db = load_embeddings(filename)
+        print("Loaded embeddings from file.")
+    else:
+        # 沒有pickle檔案，執行正常流程
+        total_db = _embedding_all_doc()
+
+        # 保存數據到pickle檔案
+        save_embeddings(total_db, filename)
+        print(f"Embeddings saved to {filename}")
+
+    return total_db
+
+
+def _embedding_all_doc():
     # 在雲端時記得改 ../
     url_cpu = "CPU utilization.pdf"
     db_cpu = doc2vector(url_cpu)
@@ -206,6 +236,7 @@ def analyze_data(inputdata: str = None) -> str:
 
     return completion.choices[0].message.content
 
+
 def sort_log(inputdata: str = None) -> str:
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -238,6 +269,7 @@ def sort_log(inputdata: str = None) -> str:
         ],
     )
     return completion.choices[0].message.content
+
 
 def gptqa(query: str = None) -> str:
     completion = client.chat.completions.create(
