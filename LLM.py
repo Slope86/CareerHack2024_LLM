@@ -42,7 +42,7 @@ def embedding_all_doc():
     return total_db
 
 
-#total_db = embedding_all_doc()
+total_db = embedding_all_doc()
 
 
 def get_function_openai(inputdata: str = "Hello") -> list:
