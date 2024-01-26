@@ -16,29 +16,24 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 def embedding_all_doc():
+    # �銁�𤩅蝡舀�閮睃�埈㺿 ../
     url_cpu = "CPU utilization.pdf"
     db_cpu = doc2vector(url_cpu)
-    time.sleep(5)
 
     url_Memory = "Memory utilization.pdf"
     db_Memory = doc2vector(url_Memory)
-    time.sleep(5)
 
     url_Cloud = "Cloud run restart.pdf"
     db_Cloud = doc2vector(url_Cloud)
-    time.sleep(5)
 
     url_Instance = "Instance count.pdf"
     db_Instance = doc2vector(url_Instance)
-    time.sleep(5)
 
     url = "http_1_3.pdf"
     db = doc2vector(url)
-    time.sleep(30)
 
     url2 = "http_4.pdf"
     db2 = doc2vector(url2)
-    time.sleep(30)
 
     url3 = "http_5.pdf"
     db3 = doc2vector(url3)
@@ -65,7 +60,7 @@ def get_function_openai(inputdata: str = "Hello") -> list:
             {
                 "role": "system",
                 "content": """
-                Our system has the following functions:
+                Our GCP system has the following functions:
                 1. GPT Q&A
                 2. Analysis of historical logs for the past n days
                 3. CPU upscaling
@@ -74,45 +69,47 @@ def get_function_openai(inputdata: str = "Hello") -> list:
                 You will receive various inputs from users, and your task is to determine which category the task belongs to and output it in the format ['function code', 'arg 1', 'arg 2', 'arg 3']:
                 Here are some examples:
                 User input: 'How are you?'
-                Output: [1, How are you?, -1, -1]
+                Output: [1, How are you?, -1, -1] 
                 Different functions require different parameters. You must determine what to fill in for each parameter. Additionally, avoid generating any extra text for ease of programming:
                 Example 1:
                 User input: 'I want to understand HTTP CODE'
-                Output: [1,I want to understand HTTP CODE, -1, -1]
+                Output: [1,I want to understand HTTP CODE, -1, -1] ,Argument Description for instruction code 1: arg 1:user_query,arg 2:not use,alway -1 ,arg 3 : not use,always -1
                 Example 2:
                 User input: 'Check if there have been any anomalies in my system in the past 5 days, 30 hours, and 70 minutes'
                 Output: [2, 5, 30, 70]
-                Note: No need to convert time units.
+                Note: No need to convert time units. ,Argument Description for instruction code 2: arg 1: days (default -1 = None),arg 2:hours (default -1 = None) ,arg 3 : minutes (default -1 = None)
                 Example 3:
                 User input: 'Check if there have been any anomalies in my system in the past 30 hours'
                 Output: [2, -1, 30, -1]
+                Note:No need to convert time units. ,Argument Description for instruction code 2: arg 1: days (default -1 = None),arg 2:hours (default -1 = None) ,arg 3 : minutes (default -1 = None)
                 Example 4:
                 User input: 'Please find the latest information on memory from the past few days.'
-                Output: [2, 1, -1, -1]
-                Note: If no specific time is designated, the default is 1 day.
+                Output: [2, -1, 5, -1]
+                Note: If no specific time is designated, the default is 5 hour.Argument Description for instruction code 2: arg 1: days (default -1 = None),arg 2:hours (default -1 = None) ,arg 3 : minutes (default -1 = None)
                 Example 5:
                 user_input: 'My CPU space is not enough, please increase the CPU capacity '
                 output: [3, add, -1, -1]
-                Note: Since it's a request to increase the CPU, arg1 = add
+                Note: Since it's a request to increase the CPU, arg1 = add,Argument Description for instruction code 3: arg 1: action of cpu (arg1 must in set(add,sub) ),arg 2:not use always -1 ,arg 3 : not use always -1
                 Example 6:
                 user_input: 'I have too much CPU space, reduce 2 CPUs for me'
-                output: [3, sub, -1, -1]
-                Note: Since it's a request to reduce the CPU, arg1 = sub. Additionally, the number of CPUs to be used is not specified, so no need to fill in 2.
+                output: [3, sub, -1, -1] , arg1 = add,Argument Description: arg 1: action of cpu (arg1 must in set(add,sub) ),arg 2:not use always -1 ,arg 3 : not use always -1
+                Note: Since it's a request to reduce the CPU, arg1 = sub. Additionally,Argument Description for instruction code 3: arg 1: action of cpu (arg1 must in set(add,sub) ),arg 2:not use always -1 ,arg 3 : not use always -1
                 Example 7:
                 user_input: 'My memory space is not enough, please increase the memory capacity by 128m'
                 output: [4, add, -1, -1]
-                Note: Memory capacity cannot be specified, only a request to increase is needed, so no need to fill in the parameter 128.
+                Note:,Argument Description for instruction code 4: arg 1: action of memory (arg1 must in set(add,sub) ),arg 2:not use always -1 ,arg 3 : not use always -1
                 Example 8:
                 user_input: 'My memory space is overflowing, please reduce the memory capacity'
                 output: [4, sub, -1, -1]
+                Note:,Argument Description for instruction code 4: arg 1: action of memory (arg1 must in set(add,sub) ),arg 2:not use always -1 ,arg 3 : not use always -1
                 Example 9:
                 user_input: 'I need you to help me manage my system'
                 output: [5, start, -1, -1]
-                Note: since start manage system,arg1=start
+                Note: since start manage system,arg1=start.Argument Description for instruction code 5: arg 1: action of manage  (arg1 must in set(start,stop) ),arg 2:not use always -1 ,arg 3 : not use always -1
                 Example 10:
                 user_input: 'You can stop helping me manage the system now'
                 output: [5, stop, -1, -1]"
-                Note: since start manage system,arg1=stop
+                Note: since start manage system,arg1=stop,.Argument Description for instruction code 5: arg 1: action of manage  (arg1 must in set(start,stop) ),arg 2:not use always -1 ,arg 3 : not use always -1
                 """,
             },
             {"role": "user", "content": inputdata},
@@ -195,7 +192,7 @@ def analyze_data(inputdata: str = None) -> str:
                 "2024-01-24 08:34:00": "cloud run restart at 106366.128 ms. other information: cpu:0.0% memory:2.39706421%          
    	            instance_count:1.0 request_count:http code 200:1.0 http code 404:0.0 http code 500:0.0 request_latencies:0.0 ms",}
 
-                Upon receiving these logs from users, you will analyze them to summarize the past state of the system and the possible reasons for these anomalies. Remember to focus on inferring the state of the system rather than providing solutions."
+                Upon receiving the user's logs, you must briefly list the possible causes of the errors, focusing on analyzing system status without providing solutions. Limit the output to 80 words or less."
              """,
             },
             {"role": "user", "content": inputdata},
@@ -273,14 +270,19 @@ def resovle(inputdata: str = None) -> str:
             {
                 "role": "system",
                 "content": """
-                We will provide you with the error log and relevant error analysis of our system. Your task is to analyze this information and determine the appropriate actions to resolve these issues. The actions you can take include, but are not limited to:
-                1.CPU upscale
-                2.Memory upscale
-                3.Sending emails to notify relevant personnel and provide your opinion
-                4.nothing to do
-                5.Any other suggestions
-                Please respond to the user with your chosen action in 20 words or less (excluding email content, if that's your choice). 
-                Remember, you can only take one action at a time, and your decision will be implemented and affect the system, so choose carefully.
+                Users will provide you with the system's error logs and relevant analysis. Your task is to analyze this information and determine the appropriate action for addressing these issues. Your available actions are limited to:
+                1.CPU upscale: Typically used when CPU usage is high or when you believe the system requires more CPU resources.
+                2.Increase memory: Usually employed when memory usage is high or when you think additional memory is needed.
+                3.Email system administrator: Generally used when other actions fail to resolve the problem or when you believe certain situations require notification.
+                Please follow this format for your response:
+                action: ... reason: ...
+                Remember, you can only execute one action at a time and your action will indeed be implemented, affecting the system. Please choose your actions carefully. Below are example outputs:
+                Example 1
+                action: CPU upscale. reason: Currently, the CPU usage is too high and there are no other anomalies, so an increase in CPU is necessary.
+                Example 2
+                action: Increase memory. reason: Currently, there is insufficient memory and an expansion is needed.
+                Example 3
+                action: Email system administrator. reason: There are multiple unknown connection errors occurring, requiring contact with relevant personnel for resolution.
              """,
             },
             {"role": "user", "content": inputdata},
@@ -290,8 +292,8 @@ def resovle(inputdata: str = None) -> str:
     return completion.choices[0].message.content
 
 
-def real_detection(inputdata: str = None) -> str:
+def real_detection(inputdata: str = None, ori_log: str = None) -> str:
     info = analyze_vertexAI(inputdata.strip("[]").split(","))
-    action = resovle(f"{inputdata} \n {info}")
+    action = resovle(f"{ori_log} \n {info}")
 
     return action

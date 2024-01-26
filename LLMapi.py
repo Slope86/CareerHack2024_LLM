@@ -48,7 +48,8 @@ def gptqa():
 def real_detection():
     request_body: dict[str, str] = request.json
     inputdata = str(request_body["inputdata"])
-    describe = LLM.real_detection(inputdata=inputdata)
+    ori_log = str(request_body["ori_log"])
+    describe = LLM.real_detection(inputdata=inputdata, ori_log=ori_log)
     print(describe)
     return json.dumps(describe)
 
