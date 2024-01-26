@@ -84,7 +84,7 @@ def get_function_openai(inputdata: str = "Hello") -> list:
 
     """
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {
                 "role": "system",
@@ -163,7 +163,7 @@ def classification_anomaly_openai(inputdata: str = None) -> list:
 
     """
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {
                 "role": "system",
@@ -272,7 +272,7 @@ def sort_log(inputdata: str = None) -> str:
 
 def gptqa(query: str = None) -> str:
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {"role": "user", "content": query},
         ],
@@ -333,7 +333,7 @@ def analyze_vertexAI(error):
 
 def resovle(inputdata: str = None) -> str:
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {
                 "role": "system",
